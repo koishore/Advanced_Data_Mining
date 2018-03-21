@@ -2,6 +2,10 @@
 
 Project Repository for Advanced Data Mining by Professor Debapriyo Majumdar at Ashoka University for Spring 2018 Semester
 
+## Dataset
+
+Original dataset containing the ~20M AOL user queries can be found [here](http://octopus.inf.utfsm.cl/~juan/datasets/).
+
 ## Algorithms Implemented
 
 - Bloom Filter
