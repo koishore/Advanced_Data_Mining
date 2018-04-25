@@ -10,6 +10,7 @@ Original dataset containing the ~20M AOL user queries can be found [here](http:/
 
 - Bloom Filter
 - Flajolet Martin
+- Alon-Matias-Szegedy
 
 ## Language(s) Used
 
