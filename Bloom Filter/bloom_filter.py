@@ -6,29 +6,32 @@ import pandas
 import time
 
 start_time = time.time()
-m = 104998095
+
+m = 250000000
 bit_vector = [0] * m
 n = 0
 
 chunksize = 1000000
 
-for chunk in pandas.read_csv('data.csv', chunksize=chunksize):
+for chunk in pandas.read_csv('cleaned_data.csv', chunksize=chunksize):
 
     for query in chunk['Query']:
 
         query = str(query)
+
         fnvhash_query = fnv0_32(query) % m
         murmur_query = murmur64a(query, len(query), 9111) % m
 
         bit_vector[fnvhash_query] += 1
         bit_vector[murmur_query] += 1
+
         n+=1
 
 end_time = time.time()
 
 print("\nBloom filter executed in %s seconds." % (end_time - start_time))
 
-print "\nEnter `exit` to exit\nEnter `stats` to see benchmark\nEnter `query [your_string]` to check if query exists or not\nEnter `add [your_string]` to append to bloom filter"
+print "\nEnter `exit` to exit\nEnter `stats` to see benchmark\nEnter `query [your_string]` to check if query exists or not\nEnter `add [your_string]` to append to bloom filtert\nEnter `remove [your_string]` to remove from bloom filter"
 
 try:
 
@@ -37,13 +40,17 @@ try:
         checker = str(raw_input('\n>>> '))
 
         if checker == '0' or checker == 'exit':
+
             print "\nTerminating Program...\n"
             print "Good-bye, cruel world!\n"
+
             break
 
         elif checker == 'stats' or checker == '1':
 
             k = (m//n)*math.log(2,math.e)
+
+            print '\nNumber of queries =', str(n)
             print '\nIdeal value of k =', str(k)
             print '\nProbability of error:',str((1 - math.e**(-2*n/m))**2)
 
@@ -56,13 +63,15 @@ try:
             if slug[0] == 'query':
 
                 shell_query = ' '.join(slug[1:])
+
                 fnvhash_shell_query = fnv0_32(shell_query) % m
                 murmur_shell_query = murmur64a(shell_query, len(shell_query), 9111) % m
 
                 if bit_vector[fnvhash_shell_query] or bit_vector[murmur_shell_query]:
                     print '\nTrue', str(min(bit_vector[fnvhash_shell_query], bit_vector[murmur_shell_query]))
+
                 else:
-                    print '\nFalse',
+                    print '\nFalse\n',
 
             elif slug[0] == 'add':
 
@@ -73,6 +82,16 @@ try:
 
                 bit_vector[fnvhash_shell_query] += 1
                 bit_vector[murmur_shell_query] += 1
+
+            elif slug[0] == 'remove':
+
+                shell_query = ' '.join(slug[1:])
+
+                fnvhash_shell_query = fnv0_32(shell_query) % m
+                murmur_shell_query = murmur64a(shell_query, len(shell_query), 9111) % m
+
+                bit_vector[fnvhash_shell_query] = 0
+                bit_vector[murmur_shell_query] = 0
 
             else:
                 print "\nEnter valid command!"
